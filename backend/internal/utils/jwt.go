@@ -3,6 +3,7 @@ package utils
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"os"
+	"time"
 )
 
 // CustomClaims represents the JWT claims
