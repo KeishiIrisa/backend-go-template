@@ -12,8 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CreateUser creates a new user in the database using the UserSchemaIn struct
-func CreateUser(input schemas.UserSchemaIn) (*models.User, error) {
+// CreateUser creates a new user in the database using the UserSignupSchemaIn struct
+func CreateUser(input schemas.UserSignupSchemaIn) (*models.User, error) {
 	// Check if the email is already registered
 	var existingUser models.User
 	if err := database.DB.Where("email = ?", input.Email).First(&existingUser).Error; err == nil {
@@ -43,7 +43,28 @@ func CreateUser(input schemas.UserSchemaIn) (*models.User, error) {
 	return &newUser, nil
 }
 
-func GetUserByUserId(userId int64) *model
+func GetUserById(userId uint) (models.User, error) {
+	var user models.User
+	if err := database.DB.First(&user, userId).Error; err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func UpdateUserById(userId uint, input schemas.UserUpdateSchemaIn) (models.User, error) {
+	var user models.User
+	if err := database.DB.First(&user, userId).Error; err != nil {
+		return user, err
+	}
+	if input.FirstName != "" {
+		user.FirstName = input.FirstName
+	}
+	if input.LastName != "" {
+		user.LastName = input.LastName
+	}
+
+	return user, database.DB.Save(&user).Error
+}
 
 // AuthenticateUser checks user credentials and returns a JWT if successful
 func AuthenticateUser(input schemas.UserLoginSchemaIn) (string, error) {

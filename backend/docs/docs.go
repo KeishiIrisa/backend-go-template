@@ -75,7 +75,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schemas.UserSchemaIn"
+                            "$ref": "#/definitions/schemas.UserSignupSchemaIn"
                         }
                     }
                 ],
@@ -93,6 +93,88 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "responses": {}
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserUpdateSchemaIn",
+                        "name": "item",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schemas.UserUpdateSchemaIn"
+                        }
+                    }
+                ],
+                "responses": {}
             }
         }
     },
@@ -149,7 +231,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schemas.UserSchemaIn": {
+        "schemas.UserSignupSchemaIn": {
             "type": "object",
             "required": [
                 "email",
@@ -177,6 +259,17 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 8
+                }
+            }
+        },
+        "schemas.UserUpdateSchemaIn": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
                 }
             }
         }
