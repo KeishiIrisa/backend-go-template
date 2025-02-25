@@ -25,9 +25,12 @@ func RegisterRoutes(router *gin.Engine) {
 	router.POST("/login", controllers.LoginUser)
 
 	// Protected routes (Require authentication)
-	api := router.Group("")
+	api := router.Group("/users")
 	api.Use(middleware.JWTAuthMiddleware())
 	{
-		// CRUD Routes for items
+		// CRUD Routes for users
+		api.GET("/me", controllers.GetLoggedInUser)
+		api.GET("/:id", controllers.GetUserById)
+		api.PUT("/:id", controllers.UpdateUser)
 	}
 }

@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/KeishiIrisa/backend-go-template/internal/schemas"
 	"github.com/KeishiIrisa/backend-go-template/internal/services"
@@ -15,14 +17,14 @@ import (
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param user body schemas.UserSchemaIn true "User Data"
+// @Param user body schemas.UserSignupSchemaIn true "User Data"
 // @Success 201 {object} models.User
 // @Failure 400 {string} string "Bad request"
 // @Router /sign-up [post]
 func RegisterUser(c *gin.Context) {
-	var input schemas.UserSchemaIn
+	var input schemas.UserSignupSchemaIn
 
-	// Bind the JSON input to the UserSchemaIn DTO
+	// Bind the JSON input to the UserSignupSchemaIn DTO
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
@@ -73,4 +75,97 @@ func LoginUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+// GetLoggedInUser godoc
+// @Summary
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Router /users/me [get]
+func GetLoggedInUser(c *gin.Context) {
+	userId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	user, err := services.GetUserById(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// GetUserById godoc
+// @Summary
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Security BearerAuth
+// @Router /users/{id} [get]
+func GetUserById(c *gin.Context) {
+	idStr := c.Param("id")
+	userId, err := strconv.Atoi(idStr)
+	fmt.Printf("userId: %v", userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+		return
+	}
+
+	user, err := services.GetUserById(uint(userId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+// UpdateUser godoc
+// @Summary
+// @Description
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param item body schemas.UserUpdateSchemaIn true "UserUpdateSchemaIn"
+// @Security BearerAuth
+// @Router /users/{id} [put]
+func UpdateUser(c *gin.Context) {
+	var input schemas.UserUpdateSchemaIn
+	currentUserId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	userIdStr := c.Param("id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+		return
+	}
+
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		return
+	}
+
+	// ログインしたユーザーと変更対象のユーザーが同じかどうかを検証
+	if currentUserId != uint(userId) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+		return
+	}
+	user, err := services.UpdateUserById(uint(userId), input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, user)
 }

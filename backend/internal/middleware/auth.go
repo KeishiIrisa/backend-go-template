@@ -32,7 +32,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Store the user ID in the context for future use
-		c.Set("user_id", claims.UserID)
+		c.Set("userId", claims.UserID)
 
 		c.Next() // Continue to the next handler
 	}

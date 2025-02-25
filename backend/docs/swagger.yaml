@@ -38,7 +38,7 @@ definitions:
     - email
     - password
     type: object
-  schemas.UserSchemaIn:
+  schemas.UserSignupSchemaIn:
     properties:
       email:
         type: string
@@ -61,6 +61,13 @@ definitions:
     - first_name
     - last_name
     - password
+    type: object
+  schemas.UserUpdateSchemaIn:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
     type: object
 info:
   contact: {}
@@ -105,7 +112,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/schemas.UserSchemaIn'
+          $ref: '#/definitions/schemas.UserSignupSchemaIn'
       produces:
       - application/json
       responses:
@@ -120,6 +127,56 @@ paths:
       summary: Register a new user
       tags:
       - Auth
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UserUpdateSchemaIn
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UserUpdateSchemaIn'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      tags:
+      - Users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      tags:
+      - Users
 securityDefinitions:
   BearerAuth:
     in: header

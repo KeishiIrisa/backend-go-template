@@ -1,6 +1,6 @@
 .PHONY: swag
 swag:
-	go run github.com/swaggo/swag/cmd/swag@latest init -g backend/main.go -o backend/docs
+	cd backend && go run github.com/swaggo/swag/cmd/swag@latest init -g main.go -o docs -d .
 
 .PHONY: up
 up:
