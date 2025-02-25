@@ -43,6 +43,8 @@ func CreateUser(input schemas.UserSchemaIn) (*models.User, error) {
 	return &newUser, nil
 }
 
+func GetUserByUserId(userId int64) *model
+
 // AuthenticateUser checks user credentials and returns a JWT if successful
 func AuthenticateUser(input schemas.UserLoginSchemaIn) (string, error) {
 	var user models.User
