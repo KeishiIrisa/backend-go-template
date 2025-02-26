@@ -14,30 +14,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.22.2"
+
       - name: Install dependencies
         run: |
           cd backend
           go mod download
+
       - name: Build
         run: |
           cd backend
           go build -v ./...
-      - name: Test with the Go CLI
-        run: go test
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+
+      - name: Show files
+        run: |
+          cd backend
+          ls -a
+
+      - name: Setup Go for Linting
+        uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: golangci-lint
+
+      - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.64
           working-directory: backend
+
+      - name: Test with the Go CLI
+        run: |
+          cd backend
+          go test ./...
