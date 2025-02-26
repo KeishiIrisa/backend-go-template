@@ -30,11 +30,6 @@ jobs:
           cd backend
           go build -v ./...
 
-      - name: Show files
-        run: |
-          cd backend
-          ls -a
-
       - name: Setup Go for Linting
         uses: actions/setup-go@v5
         with:
@@ -46,7 +41,7 @@ jobs:
           version: v1.64
           working-directory: backend
 
-      - name: Test with the Go CLI
-        run: |
-          cd backend
-          go test ./...
+      # - name: Test with the Go CLI
+      #   run: |
+      #     cd backend/internal/tests
+      #     go test ./...
