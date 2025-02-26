@@ -169,3 +169,37 @@ func UpdateUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, user)
 }
+
+// DeleteUser godoc
+// @Summary
+// @Description
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Security BearerAuth
+// @Router /users/{id} [delete]
+func DeleteUser(c *gin.Context) {
+	currentUserId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	userIdStr := c.Param("id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+		return
+	}
+
+	if currentUserId != uint(userId) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+		return
+	}
+
+	if err := services.DeleteUserById(uint(userId)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+}
