@@ -17,3 +17,7 @@ down:
 .PHONY: test
 test:
 	docker compose exec api go test ./internal/tests/...
+
+.PHONY: lint
+lint:
+	act -j lint
