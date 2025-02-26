@@ -16,6 +16,11 @@ var DB *gorm.DB
 
 func AutoMigrate() {
 	DB.AutoMigrate(&models.User{})
+
+	// Seed the database with seed data
+	if err := UserSeed(DB); err != nil {
+		log.Fatalf("Failed to seed data to the database: %v", err)
+	}
 }
 
 func InitDB() {
@@ -33,8 +38,5 @@ func InitDB() {
 		log.Fatalf("Failed to connect to the database: %v", dbErr)
 	}
 
-	if err := UserSeed(DB); err != nil {
-		log.Fatalf("Failed to seed data to the database: %v", err)
-	}
 	log.Println("Database connected successfully!")
 }
