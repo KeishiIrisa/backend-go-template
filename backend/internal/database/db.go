@@ -15,7 +15,9 @@ import (
 var DB *gorm.DB
 
 func AutoMigrate() {
-	DB.AutoMigrate(&models.User{})
+	if err := DB.AutoMigrate(&models.User{}); err != nil {
+		log.Fatalf("Failed to auto migrate: %v", err)
+	}
 
 	// Seed the database with seed data
 	if err := UserSeed(DB); err != nil {

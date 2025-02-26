@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/KeishiIrisa/backend-go-template/internal/config"
 	"github.com/KeishiIrisa/backend-go-template/internal/database"
 	"github.com/KeishiIrisa/backend-go-template/internal/routes"
@@ -30,5 +32,8 @@ func main() {
 	routes.RegisterRoutes(r)
 
 	// Run the server
-	r.Run(":8080")
+	if err := r.Run(":8080"); err != nil {
+		// エラーハンドリング
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }
