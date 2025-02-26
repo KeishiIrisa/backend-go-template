@@ -66,6 +66,10 @@ func UpdateUserById(userId uint, input schemas.UserUpdateSchemaIn) (models.User,
 	return user, database.DB.Save(&user).Error
 }
 
+func DeleteUserById(userId uint) error {
+	return database.DB.Delete(&models.User{}, userId).Error
+}
+
 // AuthenticateUser checks user credentials and returns a JWT if successful
 func AuthenticateUser(input schemas.UserLoginSchemaIn) (string, error) {
 	var user models.User

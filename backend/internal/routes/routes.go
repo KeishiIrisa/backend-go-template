@@ -32,5 +32,6 @@ func RegisterRoutes(router *gin.Engine) {
 		api.GET("/me", controllers.GetLoggedInUser)
 		api.GET("/:id", controllers.GetUserById)
 		api.PUT("/:id", controllers.UpdateUser)
+		api.DELETE("/:id", controllers.DeleteUser)
 	}
 }

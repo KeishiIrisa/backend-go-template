@@ -128,6 +128,22 @@ paths:
       tags:
       - Auth
   /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      tags:
+      - users
     get:
       consumes:
       - application/json
