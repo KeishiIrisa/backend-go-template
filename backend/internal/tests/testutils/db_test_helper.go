@@ -3,12 +3,13 @@ package testutils
 import (
 	"database/sql"
 	"fmt"
-	"github.com/KeishiIrisa/backend-go-template/internal/config"
-	"github.com/KeishiIrisa/backend-go-template/internal/database"
-	"github.com/KeishiIrisa/backend-go-template/internal/models"
 	"log"
 	"os"
 	"testing"
+
+	"github.com/KeishiIrisa/backend-go-template/internal/config"
+	"github.com/KeishiIrisa/backend-go-template/internal/database"
+	"github.com/KeishiIrisa/backend-go-template/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -89,7 +90,10 @@ func SetupTestDatabase() {
 	}
 
 	// Run migrations (you can add your models here)
-	TestDB.AutoMigrate(&models.User{})
+	if err := TestDB.AutoMigrate(&models.User{}); err != nil {
+		// エラーハンドリング
+		log.Fatalf("Failed to auto migrate: %v", err)
+	}
 }
 
 // ResetTestDatabase resets the database after each test
