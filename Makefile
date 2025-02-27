@@ -17,3 +17,7 @@ down:
 .PHONY: test
 test:
 	docker compose exec api go test ./internal/tests/...
+
+.PHONY: ci
+ci:
+	act -j ci
