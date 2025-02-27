@@ -1,7 +1,10 @@
 name: backend-CI
 on:
-  push: {}
-  pull_request: {}
+  pull_request:
+    paths:
+      - "backend/**/*"
+      - ".github/workflows/ci-backend.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,6 +14,9 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -21,14 +27,10 @@ jobs:
           go-version: "1.22.2"
 
       - name: Install dependencies
-        run: |
-          cd backend
-          go mod download
+        run: go mod download
 
       - name: Build
-        run: |
-          cd backend
-          go build -v ./...
+        run: go build -v ./...
 
       - name: Setup Go for Linting
         uses: actions/setup-go@v5
@@ -42,6 +44,4 @@ jobs:
           working-directory: backend
 
       # - name: Test with the Go CLI
-      #   run: |
-      #     cd backend/internal/tests
-      #     go test ./...
+      #   run: go test ./...
